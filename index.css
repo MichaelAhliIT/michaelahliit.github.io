@@ -9,3 +9,10 @@
         background-color: blue;
     }
 }
+
+@media (max-width: 575.98px){
+    body{
+        background-color: linear-gradient(90deg, hsla(33, 100%, 53%, 1) 0%, hsla(58, 100%, 68%, 1) 100%);
+    }
+}
+
