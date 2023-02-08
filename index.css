@@ -1,3 +1,22 @@
+.flex-container{
+    display: flex;
+    flex-wrap: nowrap;
+    background-color: azure;
+    justify-content: space-between;
+}
+
+.flex-container > div{
+    background-color: lightsalmon;
+    width: 100px;
+    margin: 10px;
+    text-align: center;
+    line-height: 75px;
+    font-size: 30px;
+    
+}
+
+
+
 @media (min-width: 576px) and (max-width: 767.98px){
     body{
         background-color: blueviolet;
@@ -10,9 +29,14 @@
     }
 }
 
-@media (max-width: 575.98px){
+@media (min-width: 200px) and (max-width: 575.98px){
     body{
-        background-color: linear-gradient(90deg, hsla(33, 100%, 53%, 1) 0%, hsla(58, 100%, 68%, 1) 100%);
+        background-color: aqua;
+        
+    }
+
+    .flex-container{
+        flex-direction: column;
     }
 }
 
