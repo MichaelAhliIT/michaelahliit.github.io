@@ -1,10 +1,10 @@
 {
-  "name": "Coba PWA",
-  "short_name": "Coba",
+  "name": "PWA",
+  "short_name": "PWA",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#2A3443",
-  "description": "Aplikasi mencoba",
+  "description": "Aplikasi PWA",
   "theme_color": "#2A3443",
   "icons": [
     {
