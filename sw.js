@@ -2,12 +2,22 @@ var APP_PREFIX = 'PWA'     // Identifier for this app (this needs to be consiste
 var VERSION = 'version_01'              // Version of the off-line cache (change this value everytime you want to update cache)
 var CACHE_NAME = APP_PREFIX + VERSION
 var URLS = [                            // Add URL you want to cache in this list.
-  '/',                     // If you have separate JS/CSS files,
-  '/index.html',            // add path to those files here
-  '/about.html',            // add path to those files here
-  '/css/about.css',            // add path to those files here
-  '/css/app.css',            // add path to those files here
-  '/js/app.js',            // add path to those files here
+  // '/',                     // If you have separate JS/CSS files,
+  // '/index.html',            // add path to those files here
+  // '/about.html',            // add path to those files here
+  // '/css/about.css',            // add path to those files here
+  // '/css/app.css',            // add path to those files here
+  // '/js/app.js',            // add path to those files here
+
+  "/",
+  "/index.html",
+  "/about.html",
+  "/contact.html",
+  "/blog.html",
+  "/portfolio-example-01.html",
+  "/styles.css",
+  "/Tutorial/*.html",
+  "/Tutorial/step05-individual-pages/*.html",
 ]
 
 // Respond with cached resources
