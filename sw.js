@@ -12,45 +12,57 @@ var URLS = [                            // Add URL you want to cache in this lis
 
 // Respond with cached resources
 // Install the service worker and cache the files
-self.addEventListener('install', event => {
+self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(urlsToCache))
+    caches
+      .open(CACHE_NAME)
+      .then((cache) => cache.addAll(urlsToCache))
+      .then(() => self.skipWaiting())
   );
 });
 
-// Serve files from the cache first, then update the cache from the network
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        if (response) {
-          // Serve the cached file
-          return response || fetch(event.request);
-        }
-
-        // If the file is not in the cache, fetch it from the network and cache it
-        return fetch(event.request)
-          .then(response => {
-            // Cache the fetched file
-            caches.open(CACHE_NAME)
-              .then(cache => cache.put(event.request, response.clone()));
-            // Return the fetched file
-            return response;
-          });
-      })
-  );
-});
-
-// Clean up old caches
-self.addEventListener('activate', event => {
+// Activate the service worker and delete old caches
+self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys()
-      .then(cacheNames => {
+    caches
+      .keys()
+      .then((cacheNames) => {
         return Promise.all(
-          cacheNames.filter(name => name !== CACHE_NAME)
-            .map(name => caches.delete(name))
+          cacheNames
+            .filter((cacheName) => {
+              return cacheName !== CACHE_NAME;
+            })
+            .map((cacheName) => {
+              return caches.delete(cacheName);
+            })
         );
       })
+      .then(() => self.clients.claim())
+  );
+});
+
+// Fetch the files from the cache first, then the network
+self.addEventListener("fetch", (event) => {
+  event.respondWith(
+    caches.match(event.request).then((response) => {
+      if (response) {
+        // If the file is found in the cache, return it
+        return response;
+      } else {
+        // If the file is not found in the cache, fetch it from the network
+        return fetch(event.request)
+          .then((response) => {
+            // Cache the fetched file
+            return caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, response.clone());
+              return response;
+            });
+          })
+          .catch((error) => {
+            console.error("Error fetching data:", error);
+            throw error;
+          });
+      }
+    })
   );
 });
