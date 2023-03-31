@@ -26,7 +26,7 @@ self.addEventListener('fetch', event => {
       .then(response => {
         if (response) {
           // Serve the cached file
-          return response;
+          return response || fetch(event.request);
         }
 
         // If the file is not in the cache, fetch it from the network and cache it
