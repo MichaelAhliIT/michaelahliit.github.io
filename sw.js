@@ -1,36 +1,46 @@
 var APP_PREFIX = 'PWA'     // Identifier for this app (this needs to be consistent across every cache update)
 var VERSION = 'version_01'              // Version of the off-line cache (change this value everytime you want to update cache)
 var CACHE_NAME = APP_PREFIX + VERSION
-var URLS = [                            // Add URL you want to cache in this list.
-  // '/',                     // If you have separate JS/CSS files,
-  // '/index.html',            // add path to those files here
-  // '/about.html',            // add path to those files here
-  // '/css/about.css',            // add path to those files here
-  // '/css/app.css',            // add path to those files here
-  // '/js/app.js',            // add path to those files here
+// var URLS = [                            // Add URL you want to cache in this list.
+//   // '/',                     // If you have separate JS/CSS files,
+//   // '/index.html',            // add path to those files here
+//   // '/about.html',            // add path to those files here
+//   // '/css/about.css',            // add path to those files here
+//   // '/css/app.css',            // add path to those files here
+//   // '/js/app.js',            // add path to those files here
 
-  "/",
-  "/index.html",
-  "/about.html",
-  "/contact.html",
-  "/blog.html",
-  "/portfolio-example-01.html",
-  "/styles.css",
-  "/Tutorial/*.html",
-  "/Tutorial/step05-individual-pages/*.html",
-]
+//   "/",
+//   "/index.html",
+//   "/about.html",
+//   "/contact.html",
+//   "/blog.html",
+//   "/portfolio-example-01.html",
+//   "/styles.css",
+//   "/Tutorial/*.html",
+//   "/Tutorial/step05-individual-pages/*.html",
+// ]
 
 // Respond with cached resources
 // Install the service worker and cache the files
-self.addEventListener("install", (event) => {
+self.addEventListener("install", function (event) {
+  self.skipWaiting();
   event.waitUntil(
-    caches
-      .open(CACHE_NAME)
-      .then((cache) => cache.addAll(URLS))
-      .then(() => self.skipWaiting())
+    caches.open(CACHE_NAME).then(function (cache) {
+      cache.addAll([
+        "/",
+        "/index.html",
+        "/about.html",
+        "/contact.html",
+        "/blog.html",
+        "/portfolio-example-01.html",
+        "/styles.css",
+        "/Tutorial/*.html",
+        "/Tutorial/step05-individual-pages/*.html",
+      ]);
+    })
   );
+  return self.clients.claim();
 });
-
 // Activate the service worker and delete old caches
 self.addEventListener("activate", (event) => {
   event.waitUntil(
