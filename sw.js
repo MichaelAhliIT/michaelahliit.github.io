@@ -11,23 +11,24 @@ var URLS = [                            // Add URL you want to cache in this lis
 ]
 
 // Respond with cached resources
-self.addEventListener('fetch', function (e) {
-  console.log('fetch request : ' + e.request.url)
-  e.respondWith(
-    caches.match(e.request).then(function (request) {
-      if (request) { // if cache is available, respond with cache
-        console.log('responding with cache : ' + e.request.url)
-        return request
-      } else {       // if there are no cache, try fetching request
-        console.log('file is not cached, fetching : ' + e.request.url)
-        return fetch(e.request)
-      }
-
-      // You can omit if/else for console.log & put one line below like this too.
-      // return request || fetch(e.request)
-    })
-  )
-})
+self.addEventListener('fetch', function (event) {
+    event.respondWith(
+        caches.open(cacheName)
+            .then(function(cache) {
+                cache.match(event.request)
+                    .then( function(cacheResponse) {
+                        if(cacheResponse)
+                            return cacheResponse
+                        else
+                            return fetch(event.request)
+                                .then(function(networkResponse) {
+                                    cache.put(event.request, networkResponse.clone())
+                                    return networkResponse
+                                })
+                    })
+            })
+    )
+});
 
 // Cache resources
 self.addEventListener('install', function (e) {
