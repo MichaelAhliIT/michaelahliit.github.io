@@ -4,7 +4,7 @@ const APP = {
     if ('serviceWorker' in navigator) {
       //register our service worker
       navigator.serviceWorker
-        .register('/sw.js', {
+        .register('sw.js', {
           updateViaCache: 'none',
           scope: '/',
         })
