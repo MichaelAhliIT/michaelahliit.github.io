@@ -1,5 +1,5 @@
-var APP_PREFIX = 'CobaPWA'     // Identifier for this app (this needs to be consistent across every cache update)
-var VERSION = 'version_02'              // Version of the off-line cache (change this value everytime you want to update cache)
+var APP_PREFIX = 'PWA'     // Identifier for this app (this needs to be consistent across every cache update)
+var VERSION = 'version_01'              // Version of the off-line cache (change this value everytime you want to update cache)
 var CACHE_NAME = APP_PREFIX + VERSION
 var URLS = [                            // Add URL you want to cache in this list.
   '/',                     // If you have separate JS/CSS files,
@@ -11,53 +11,46 @@ var URLS = [                            // Add URL you want to cache in this lis
 ]
 
 // Respond with cached resources
-self.addEventListener('fetch', function (event) {
-    event.respondWith(
-        caches.open(cacheName)
-            .then(function(cache) {
-                cache.match(event.request)
-                    .then( function(cacheResponse) {
-                        if(cacheResponse)
-                            return cacheResponse
-                        else
-                            return fetch(event.request)
-                                .then(function(networkResponse) {
-                                    cache.put(event.request, networkResponse.clone())
-                                    return networkResponse
-                                })
-                    })
-            })
-    )
+// Install the service worker and cache the files
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(urlsToCache))
+  );
 });
 
-// Cache resources
-self.addEventListener('install', function (e) {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then(function (cache) {
-      console.log('installing cache : ' + CACHE_NAME)
-      return cache.addAll(URLS)
-    })
-  )
-})
-
-// Delete outdated caches
-self.addEventListener('activate', function (e) {
-  e.waitUntil(
-    caches.keys().then(function (keyList) {
-      // `keyList` contains all cache names under your username.github.io
-      // filter out ones that has this app prefix to create white list
-      var cacheWhitelist = keyList.filter(function (key) {
-        return key.indexOf(APP_PREFIX)
-      })
-      // add current cache name to white list
-      cacheWhitelist.push(CACHE_NAME)
-
-      return Promise.all(keyList.map(function (key, i) {
-        if (cacheWhitelist.indexOf(key) === -1) {
-          console.log('deleting cache : ' + keyList[i] )
-          return caches.delete(keyList[i])
+// Serve files from the cache first, then update the cache from the network
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.match(event.request)
+      .then(response => {
+        if (response) {
+          // Serve the cached file
+          return response;
         }
-      }))
-    })
-  )
-})
+
+        // If the file is not in the cache, fetch it from the network and cache it
+        return fetch(event.request)
+          .then(response => {
+            // Cache the fetched file
+            caches.open(CACHE_NAME)
+              .then(cache => cache.put(event.request, response.clone()));
+            // Return the fetched file
+            return response;
+          });
+      })
+  );
+});
+
+// Clean up old caches
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys()
+      .then(cacheNames => {
+        return Promise.all(
+          cacheNames.filter(name => name !== CACHE_NAME)
+            .map(name => caches.delete(name))
+        );
+      })
+  );
+});
