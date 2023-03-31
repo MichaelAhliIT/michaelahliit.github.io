@@ -1,7 +1,7 @@
 {
   "name": "PWA",
   "short_name": "PWA",
-  "start_url": ".",
+  "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#2A3443",
   "description": "Aplikasi PWA",
@@ -12,5 +12,6 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ]
+  ],
+  "prefer_related_applications": false
 }
